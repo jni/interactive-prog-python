@@ -27,13 +27,14 @@ def mouseclick(pos):
     global cards, exposed, state, current, score, turns,\
            lastcard, label, tohide
     index = pos[0] // CARD_WIDTH
-    print 'clicked on card number', index
     if not exposed[index]:
+        print 'clicked on card number', index
         exposed[index] = True
         for h in tohide:
             exposed[h] = False
         tohide = []
     else:
+        print 'click IGNORED on card number', index
         return
     currentcard = (index, cards[index])
     if state == 1:
