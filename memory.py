@@ -5,7 +5,7 @@ import random
 
 NUM_PAIRS = 8
 CARD_WIDTH = 50  # in pixels
-TEXT_SIZE = 16  # in points
+TEXT_SIZE = 64  # in points
 
 # helper function to initialize globals
 def new_game():
@@ -58,7 +58,9 @@ def draw(canvas):
         if exp:
             canvas.draw_polygon(rectangle, 2,
                                 'Gray', 'White')
-            canvas.draw_text(str(val), lower_left,
+            lower_left_offset = (lower_left[0] + 7,
+                                 lower_left[1] - 25)
+            canvas.draw_text(str(val), lower_left_offset,
                              TEXT_SIZE, 'Blue', 'monospace')
         else:
             canvas.draw_polygon(rectangle, 1,
