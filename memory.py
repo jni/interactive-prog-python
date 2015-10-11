@@ -10,7 +10,7 @@ TEXT_SIZE = 64  # in points
 # helper function to initialize globals
 def new_game():
     global cards, exposed, state, current, score, turns,\
-           lastcard, label
+           lastcard, label, tohide
     score = 0
     turns = 0
     cards = range(NUM_PAIRS) + range(NUM_PAIRS)
@@ -19,30 +19,32 @@ def new_game():
     state = 0
     lastcard = (-1, -1)
     label.set_text('Turns = %i' % turns)
+    tohide = []
 
 
 # define event handlers
 def mouseclick(pos):
     global cards, exposed, state, current, score, turns,\
-           lastcard
+           lastcard, label, tohide
     index = pos[0] // CARD_WIDTH
     print 'clicked on card number', index
     if not exposed[index]:
         exposed[index] = True
+        for h in tohide:
+            exposed[h] = False
+        tohide = []
     else:
         return
     currentcard = (index, cards[index])
     if state == 1:
         state = 0
         turns += 1
-        global label
         label.set_text('Turns = %i' % turns)
         if lastcard[1] == currentcard[1]:
             score += 1
             lastcard = (-1, -1)
         else:
-            exposed[lastcard[0]] = False
-            exposed[currentcard[0]] = False
+            tohide = [lastcard[0], currentcard[0]]
     else:
         state = 1
         lastcard = currentcard
