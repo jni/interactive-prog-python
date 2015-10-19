@@ -44,12 +44,13 @@ def input_guess(guess):
         print '... and it was too high.'
     else:
         print '... and BOOM. You got it.'
+        new_game()
     if guesses_remaining == 0:
         print 'You ran out of guesses! Starting a new game.'
         print '(The secret number was %i.)' % secret_number
         new_game()
 
-    
+
 # create frame
 initialize_game()
 frame = simplegui.create_frame('Guess the number', 200, 200)
