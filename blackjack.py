@@ -27,6 +27,7 @@ VALUES = {'A':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10,
 
 # other constants
 BUST = 22
+DEALER_STAND = 17
 
 # define card class
 class Card:
@@ -144,9 +145,24 @@ def hit():
 
 
 def stand():
-    pass	# replace with your code below
-   
-    # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
+    global in_play, outcome, score
+    global player, dealer, deck
+    if not in_play:
+        print "Erm, that's like resting your case after the verdict."
+        return
+    while dealer.get_value() < DEALER_STAND:
+        dealer.add_card(deck.deal_card())
+    if dealer.get_value() < player.get_value():
+        outcome = 'You win!'
+        score += 1
+    elif dealer.get_value() >= BUST:
+        outcome = 'Dealer busts!'
+        score += 1  # ?
+    else:
+        outcome = 'Dealer wins!'
+        score -= 1
+    print outcome
+    in_play = False
 
     # assign a message to outcome, update in_play and score
 
