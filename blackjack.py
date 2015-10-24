@@ -13,6 +13,9 @@ CARD_BACK_CENTER = (36, 48)
 card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-assets/card_jfitz_back.png")    
 
 # initialize some useful global variables
+deck = None
+dealer = None
+player = None
 in_play = False
 outcome = ""
 score = 0
@@ -104,13 +107,26 @@ class Deck:
         return '/'.join(map(str, self.cards))
 
 
-
 #define event handlers for buttons
 def deal():
     global outcome, in_play
+    global deck
+    global dealer, player
 
-    # your code goes here
-    
+    deck = Deck()
+    deck.shuffle()
+
+    dealer = Hand()
+    dealer.add_card(deck.deal_card())
+    player = Hand()
+    player.add_card(deck.deal_card())
+
+    dealer.set_name('Dealer')
+    player.set_name('Player')
+    print dealer
+    print player
+
+    outcome = ''
     in_play = True
 
 def hit():
