@@ -71,7 +71,7 @@ class Hand:
         self.cards.append(card)
 
     def get_value(self):
-        base_value = sum([VALUES[card] for card in self.cards])
+        base_value = sum([VALUES[card.rank] for card in self.cards])
         has_ace = len(filter(is_ace, self.cards)) > 0
         if has_ace and base_value + 10 < BUST:
             total_value = base_value + 10
