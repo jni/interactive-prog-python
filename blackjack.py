@@ -20,7 +20,7 @@ deck = None
 dealer = None
 player = None
 in_play = False
-outcome = ""
+outcome = 'Hit or stand?'
 score = 0
 canvas = None
 frame = None
@@ -130,14 +130,16 @@ def deal():
     dealer = Hand()
     dealer.set_name('Dealer')
     dealer.add_card(deck.deal_card())
+    dealer.add_card(deck.deal_card())
     player = Hand()
     player.set_name('Player')
+    player.add_card(deck.deal_card())
     player.add_card(deck.deal_card())
 
     print dealer
     print player
 
-    outcome = ''
+    outcome = 'Hit or stand?'
     in_play = True
 
 
@@ -146,9 +148,9 @@ def hit():
     global deck, player
     if in_play:
         player.add_card(deck.deal_card())
-    if player.get_value() > BUST:
+    if player.get_value() >= BUST:
         in_play = False
-        outcome = 'You have busted!'
+        outcome = 'You have busted! Deal again?'
         print outcome
         score -= 1
 
@@ -157,18 +159,20 @@ def stand():
     global in_play, outcome, score
     global player, dealer, deck
     if not in_play:
-        print "Erm, that's like resting your case after the verdict."
+        outcome = ("That's like resting your case after the final verdict.\n"
+                   "Deal again?")
+        print outcome
         return
     while dealer.get_value() < DEALER_STAND:
         dealer.add_card(deck.deal_card())
     if dealer.get_value() < player.get_value():
-        outcome = 'You win!'
+        outcome = 'You win! Deal again?'
         score += 1
     elif dealer.get_value() >= BUST:
-        outcome = 'Dealer busts!'
+        outcome = 'Dealer busts! Deal again?'
         score += 1  # ?
     else:
-        outcome = 'Dealer wins!'
+        outcome = 'Dealer wins! Deal again?'
         score -= 1
     print outcome
     in_play = False
@@ -188,6 +192,21 @@ def draw_title(canvas):
     canvas.draw_text(title, (600 - w, 583), 36, 'Black', 'serif')
     canvas.draw_text(title, (600 - w - 3, 580), 36, 'Red', 'serif')
 
+
+def draw_message(canvas):
+    global frame, outcome
+    w = frame.get_canvas_textwidth(outcome, 24, 'sans-serif')
+    canvas.draw_text(outcome,
+                     (300 - w // 2 + 10, 300),
+                     24, 'Navy', 'sans-serif')
+
+
+def draw_score(canvas):
+    global frame, score
+    score_str = 'Score %i' % score
+    w = frame.get_canvas_textwidth(score_str, 24, 'sans-serif')
+    canvas.draw_text(score_str, (600 - w, 24), 24, 'Navy', 'sans-serif')
+
 # draw handler    
 def draw(canvas):
     # draw players
@@ -198,6 +217,8 @@ def draw(canvas):
     player.draw(canvas, [player_x, 448])
 
     draw_title(canvas)
+    draw_message(canvas)
+    draw_score(canvas)
 
 # initialization frame
 frame = simplegui.create_frame("Blackjack", 600, 600)
