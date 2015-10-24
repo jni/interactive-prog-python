@@ -10,7 +10,10 @@ card_images = simplegui.load_image("http://storage.googleapis.com/codeskulptor-a
 
 CARD_BACK_SIZE = (72, 96)
 CARD_BACK_CENTER = (36, 48)
-card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-assets/card_jfitz_back.png")    
+card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-assets/card_jfitz_back.png")
+
+# draw subsequent cards with this offset
+CARD_OFFSET = (24, 0)
 
 # initialize some useful global variables
 deck = None
@@ -19,6 +22,7 @@ player = None
 in_play = False
 outcome = ""
 score = 0
+canvas = None
 
 # define globals for cards
 SUITS = ('C', 'S', 'H', 'D')
@@ -90,7 +94,11 @@ class Hand:
         self.name = name
 
     def draw(self, canvas, pos):
-        pass	# draw a hand on the canvas, use the draw method for cards
+        x, y = pos
+        x_off, y_off = CARD_OFFSET
+        for i, card in enumerate(self.cards):
+            card_pos = x + i * x_off, y + i * y_off
+            card.draw(canvas, card_pos)
 
 
 
@@ -164,14 +172,21 @@ def stand():
     print outcome
     in_play = False
 
-    # assign a message to outcome, update in_play and score
+
+def hand_position(hand):
+    '''Find x-position of first card so hand is centered.'''
+    ncards = len(hand.cards)
+    pos = round(300.0 - ncards * CARD_OFFSET[0] / 2)
+    return pos
+
 
 # draw handler    
 def draw(canvas):
-    # test to make sure that card.draw works, replace with your code below
-    
-    card = Card("S", "A")
-    card.draw(canvas, [300, 300])
+    global dealer, player
+    dealer_x = hand_position(dealer)
+    dealer.draw(canvas, [dealer_x, 52])
+    player_x = hand_position(player)
+    player.draw(canvas, [player_x, 448])
 
 
 # initialization frame
@@ -180,7 +195,7 @@ frame.set_canvas_background("Green")
 
 #create buttons and canvas callback
 frame.add_button("Deal", deal, 200)
-frame.add_button("Hit",  hit, 200)
+frame.add_button("Hit", hit, 200)
 frame.add_button("Stand", stand, 200)
 frame.set_draw_handler(draw)
 
