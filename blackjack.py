@@ -74,6 +74,7 @@ class Hand:
 
     def add_card(self, card):
         self.cards.append(card)
+        print 'Card added to', self
 
     def get_value(self):
         base_value = sum([VALUES[card.rank] for card in self.cards])
@@ -117,12 +118,12 @@ def deal():
     deck.shuffle()
 
     dealer = Hand()
+    dealer.set_name('Dealer')
     dealer.add_card(deck.deal_card())
     player = Hand()
+    player.set_name('Player')
     player.add_card(deck.deal_card())
 
-    dealer.set_name('Dealer')
-    player.set_name('Player')
     print dealer
     print player
 
