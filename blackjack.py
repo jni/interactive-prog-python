@@ -84,20 +84,19 @@ class Hand:
 
 
 
-# define deck class 
+# define deck class
 class Deck:
     def __init__(self):
-        pass	# create a Deck object
+        self.cards = [Card(suit, rank) for suit in SUITS for rank in RANKS]
 
     def shuffle(self):
-        # shuffle the deck 
-        pass    # use random.shuffle()
+        random.shuffle(self.cards)
 
     def deal_card(self):
-        pass	# deal a card object from the deck
-    
+        return self.cards.pop()
+
     def __str__(self):
-        pass	# return a string representing the deck
+        return '/'.join(map(str, self.cards))
 
 
 
