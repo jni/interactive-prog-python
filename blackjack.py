@@ -63,9 +63,11 @@ class Hand:
     def __init__(self):
         self.hole_card = None
         self.cards = []
+        self.name = ''
 
     def __str__(self):
-        return '[' + ', '.join(map(str, self.cards)) + ']'
+        return (self.name + ':' +
+                '[' + ', '.join(map(str, self.cards)) + ']')
 
     def add_card(self, card):
         self.cards.append(card)
@@ -78,6 +80,9 @@ class Hand:
         else:
             total_value = base_value
         return total_value
+
+    def set_name(self, name):
+        self.name = name
 
     def draw(self, canvas, pos):
         pass	# draw a hand on the canvas, use the draw method for cards
