@@ -23,6 +23,7 @@ in_play = False
 outcome = ""
 score = 0
 canvas = None
+frame = None
 
 # define globals for cards
 SUITS = ('C', 'S', 'H', 'D')
@@ -180,14 +181,23 @@ def hand_position(hand):
     return pos
 
 
+def draw_title(canvas):
+    global frame
+    title = 'Blackjack!'
+    w = frame.get_canvas_textwidth(title, 36, 'serif')
+    canvas.draw_text(title, (600 - w, 583), 36, 'Black', 'serif')
+    canvas.draw_text(title, (600 - w - 3, 580), 36, 'Red', 'serif')
+
 # draw handler    
 def draw(canvas):
+    # draw players
     global dealer, player
     dealer_x = hand_position(dealer)
     dealer.draw(canvas, [dealer_x, 52])
     player_x = hand_position(player)
     player.draw(canvas, [player_x, 448])
 
+    draw_title(canvas)
 
 # initialization frame
 frame = simplegui.create_frame("Blackjack", 600, 600)
