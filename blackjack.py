@@ -131,9 +131,17 @@ class Deck:
 
 #define event handlers for buttons
 def deal():
-    global outcome, in_play
+    global outcome, in_play, score
     global deck
     global dealer, player
+
+    if in_play:
+        outcome = 'You forfeit the previous round! Hit or stand?'
+        print outcome
+        score -= 1
+    else:
+        outcome = 'Hit or stand?'
+        in_play = True
 
     deck = Deck()
     deck.shuffle()
@@ -149,9 +157,6 @@ def deal():
 
     print dealer
     print player
-
-    outcome = 'Hit or stand?'
-    in_play = True
 
 
 def hit():
