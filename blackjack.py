@@ -40,6 +40,7 @@ class Card:
         if (suit in SUITS) and (rank in RANKS):
             self.suit = suit
             self.rank = rank
+            self.face_down = False
         else:
             self.suit = None
             self.rank = None
@@ -55,11 +56,16 @@ class Card:
         return self.rank
 
     def draw(self, canvas, pos):
-        card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank), 
-                    CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
+        if self.face_down:
+            card_loc = (CARD_CENTER[0] + CARD_SIZE[0], CARD_CENTER[1])
+            card_im = card_back
+        else:
+            card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * RANKS.index(self.rank),
+                        CARD_CENTER[1] + CARD_SIZE[1] * SUITS.index(self.suit))
+            card_im = card_images
         card_pos = (pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1])
-        canvas.draw_image(card_images,
-                          card_loc, CARD_SIZE, # position in card_images
+        canvas.draw_image(card_im,  # source image
+                          card_loc, CARD_SIZE, # position in source image
                           card_pos, CARD_SIZE)  # position on canvas
 
 
@@ -78,7 +84,8 @@ class Hand:
         return (self.name + ':' +
                 '[' + ', '.join(map(str, self.cards)) + ']')
 
-    def add_card(self, card):
+    def add_card(self, card, face_down=False):
+        card.face_down = face_down
         self.cards.append(card)
         print 'Card added to', self
 
@@ -100,6 +107,10 @@ class Hand:
         for i, card in enumerate(self.cards):
             card_pos = x + i * x_off, y + i * y_off
             card.draw(canvas, card_pos)
+
+    def turn_over_cards(self):
+        for c in self.cards:
+            c.face_down = False
 
 
 
@@ -129,7 +140,7 @@ def deal():
 
     dealer = Hand()
     dealer.set_name('Dealer')
-    dealer.add_card(deck.deal_card())
+    dealer.add_card(deck.deal_card(), face_down=True)
     dealer.add_card(deck.deal_card())
     player = Hand()
     player.set_name('Player')
@@ -159,10 +170,11 @@ def stand():
     global in_play, outcome, score
     global player, dealer, deck
     if not in_play:
-        outcome = ("That's like resting your case after the final verdict.\n"
+        outcome = ("That's like resting a case after the verdict. "
                    "Deal again?")
         print outcome
         return
+    dealer.turn_over_cards()
     while dealer.get_value() < DEALER_STAND:
         dealer.add_card(deck.deal_card())
     if dealer.get_value() < player.get_value():
@@ -197,15 +209,15 @@ def draw_message(canvas):
     global frame, outcome
     w = frame.get_canvas_textwidth(outcome, 24, 'sans-serif')
     canvas.draw_text(outcome,
-                     (300 - w // 2 + 10, 300),
-                     24, 'Navy', 'sans-serif')
+                     (300 - w // 2, 300),
+                     24, 'Black', 'sans-serif')
 
 
 def draw_score(canvas):
     global frame, score
     score_str = 'Score %i' % score
     w = frame.get_canvas_textwidth(score_str, 24, 'sans-serif')
-    canvas.draw_text(score_str, (600 - w, 24), 24, 'Navy', 'sans-serif')
+    canvas.draw_text(score_str, (600 - w, 24), 24, 'Black', 'sans-serif')
 
 # draw handler    
 def draw(canvas):
